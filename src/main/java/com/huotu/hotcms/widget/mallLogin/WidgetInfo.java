@@ -13,6 +13,8 @@ import java.util.*;
 
 import com.huotu.hotcms.service.common.PageType;
 import com.huotu.hotcms.widget.*;
+import com.huotu.hotcms.widget.entity.PageInfo;
+import com.huotu.hotcms.widget.repository.PageInfoRepository;
 import me.jiangcai.lib.resource.service.ResourceService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +24,7 @@ import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -30,6 +33,9 @@ import java.util.Map;
 public class WidgetInfo implements Widget, PreProcessWidget {
     private static final Log log = LogFactory.getLog(WidgetInfo.class);
     public static final String VALID_PAGE_IDS = "pageIds";
+    private static final String VALID_PAGE_LIST = "pageList";
+    private static final String VALID_PAGE_SERIAL = "pageSerial";
+    private static final String VALID_PAGE_PATH = "defaultRedirectPath";
 
     @Override
     public String groupId() {
@@ -119,13 +125,33 @@ public class WidgetInfo implements Widget, PreProcessWidget {
         List<Map<String, Object>> navbarPageInfoModels = new ArrayList<>();
         navbarPageInfoModels.add(map1);
         properties.put(VALID_PAGE_IDS, navbarPageInfoModels);
+
         return properties;
     }
 
     @Override
     public void prepareContext(WidgetStyle style, ComponentProperties properties, Map<String, Object> variables
             , Map<String, String> parameters) {
-
+        PageInfoRepository pageInfoRepository = getCMSServiceFromCMSContext(PageInfoRepository.class);
+        List<PageInfo> pageList = pageInfoRepository.findBySite(CMSContext.RequestContext().getSite());
+        if (!pageList.isEmpty()) {
+            pageList = pageList.stream()
+                    .filter(pageInfo -> pageInfo.getPageType().equals(PageType.DataIndex)
+                            || pageInfo.getPageType().equals(PageType.Ordinary)).collect(Collectors.toList());
+            variables.put(VALID_PAGE_LIST, pageList);
+            if (properties.containsKey(VALID_PAGE_SERIAL)) {
+                PageInfo pageInfo = pageInfoRepository.findBySiteAndSerial(CMSContext.RequestContext().getSite()
+                        , properties.get(VALID_PAGE_SERIAL).toString());
+                if (pageInfo != null)
+                    variables.put(VALID_PAGE_PATH, pageInfo.getPagePath());
+            } else {
+                for (PageInfo page : pageList) {
+                    properties.put(VALID_PAGE_SERIAL, page.getSerial());
+                    variables.put(VALID_PAGE_PATH, page.getPagePath());
+                    break;
+                }
+            }
+        }
     }
 
 }

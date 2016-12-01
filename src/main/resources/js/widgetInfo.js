@@ -5,6 +5,7 @@ CMSWidgets.initWidget({
 // 编辑器相关
     editor: {
         saveComponent: function (onFailed) {
+            this.properties.pageSerial = $("select[name='pageSerial']").val();
             var nodes = $.getTreeViewData();
             this.properties.pageIds = nodes;
         },

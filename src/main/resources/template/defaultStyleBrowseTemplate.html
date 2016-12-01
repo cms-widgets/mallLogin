@@ -1,9 +1,11 @@
 <!--预览视图-->
-<div class="mall-loginModule"  xmlns:res="http://resource.jiangcai.me" xmlns:th="http://www.thymeleaf.org" th:id="${componentId}">
+<div class="mall-loginModule" xmlns:res="http://resource.jiangcai.me" xmlns:th="http://www.thymeleaf.org"
+     th:id="${componentId}">
     <div class="login-tab">
         <h3>账户登录</h3>
     </div>
-    <form class="form" th:action="@{/mall/login}" method="post">
+
+    <div class="form">
         <div class="form-group input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
             <input type="text" name="username" class="form-control" placeholder="手机号 / 用户名">
@@ -17,23 +19,56 @@
             <label>自动登录</label>
         </div>
         <div class="login-btn">
-            <button type="submit" class="btn btn-default btn-login">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+            <button type="button" id="loginButton" class="btn btn-default btn-login">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
         </div>
-    </form>
-    <div class="sign-up">
+        <div class="sign-up">
         <span class="regist" th:each="oneItem :${pageIds}">
             <a th:if="${(oneItem['visibleValue']=='' or oneItem['visibleValue']==true) and
                     oneItem['flag']==0}" th:text="${oneItem['name']}"
                th:href="${oneItem['linkPath']}" href="javascript:;"
             >立即注册</a>
-            <a  th:if="${(oneItem['visibleValue']=='' or oneItem['visibleValue']==true) and
+            <a th:if="${(oneItem['visibleValue']=='' or oneItem['visibleValue']==true) and
                     oneItem['flag']==1}" th:text="${oneItem['name']}"
-                th:href="@{/_web/{pagePath}(pagePath=${@cmsDataSourceService.findPageInfoContent(oneItem['linkPath'])
+               th:href="@{/_web/{pagePath}(pagePath=${@cmsDataSourceService.findPageInfoContent(oneItem['linkPath'])
                        !=null?@cmsDataSourceService.findPageInfoContent(oneItem['linkPath']).pagePath:''})}"
-                href="javascript:;" >首页</a>
+               href="javascript:;">首页</a>
         </span>
 
-        <!--<span class="forget-pwd"><a href="#" target="_blank">忘记密码？</a></span>-->
+            <!--<span class="forget-pwd"><a href="#" target="_blank">忘记密码？</a></span>-->
+        </div>
+        <script th:inline="javascript">
+            $(function () {
+                var loginUrl = /*[[@{/mall/login}]]*/null;
+                var defaultRedirectPath = /*[[@{/${defaultRedirectPath}}]]*/ null;
+
+                function success(data) {
+                    if (data.status) {
+                        //从 location.href 获取 loginSuccessRedirectUrl
+                        var loginSuccessRedirectUrl = /*[[${loginSuccessRedirectUrl}]]*/ null;
+                        if (!loginSuccessRedirectUrl) {
+                            window.location.href = defaultRedirectPath;
+                        } else {
+                            window.location.href = loginSuccessRedirectUrl;
+                        }
+                    }
+                }
+
+                $("#loginButton").click(function () {
+                    $.ajax({
+                        type: "post",
+                        url: loginUrl,
+                        data: {
+                            username: $("input[name='username']").val(),
+                            password: $("input[name='password']").val()
+                        },
+                        dataType: "json",
+                        success: success,
+                        error: success
+                    });
+                });
+            })
+
+        </script>
     </div>
 </div>
 <!--/预览视图-->

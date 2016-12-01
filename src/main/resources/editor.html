@@ -1,8 +1,21 @@
 <!--编辑视图-->
-<div class="borderBoxs">
+<div class="borderBoxs" xmlns:th="http://www.thymeleaf.org">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">默认登录回跳页面</label>
+        <div class="col-sm-10">
+            <select class="chosen-select" name="pageSerial" data-placeholder="默认登录回跳页面"
+                    title="默认登录回跳页面">
+                <option th:each="page:${pageList}" th:value="${page.serial}" th:text="${page.title}"
+                        th:selected="${page.serial==pageSerial}">
+                    页面
+                </option>
+            </select>
+        </div>
+    </div>
     <div>
         <div id="treeView"></div>
     </div>
+
 </div>
 <!--/编辑视图-->
 

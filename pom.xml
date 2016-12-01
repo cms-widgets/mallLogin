@@ -13,10 +13,10 @@
 
     <groupId>com.huotu.hotcms.widget.mallLogin</groupId>
     <artifactId>mallLogin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>A custom Widget</name>
+    <name>mallLogin</name>
     <url>https://github.com/huotuinc/CMS</url>
     <organization>
         <name>Hangzhou Hot Technology Co., Ltd.</name>
@@ -65,13 +65,13 @@
         <dependency>
             <groupId>com.huotu.hotcms</groupId>
             <artifactId>widget-test</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
+            <version>1.3.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.huotu.hotcms</groupId>
             <artifactId>widget-api</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
+            <version>1.3.2-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
@@ -130,7 +130,7 @@
             <plugin>
                 <groupId>com.huotu.hotcms</groupId>
                 <artifactId>widget-preview</artifactId>
-                <version>1.3.0-SNAPSHOT</version>
+                <version>1.3.2-SNAPSHOT</version>
             </plugin>
         </plugins>
     </build>
